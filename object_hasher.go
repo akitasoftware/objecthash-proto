@@ -37,6 +37,8 @@ type objectHasher struct {
 	// Custom type identifier for hashing proto messages, as opposed to using
 	// the map identifier.
 	messageIdentifier string
+
+	ignoredFieldNames []string
 }
 
 // HashProto returns the object hash of a given protocol buffer message.
@@ -179,6 +181,18 @@ func (hasher *objectHasher) hashStruct(sv reflect.Value) ([]byte, error) {
 
 		if err = failIfUnsupported(v, sf); err != nil {
 			return nil, err
+		}
+
+		// Ignore fields that are explicitly ignored.
+		ignoreField := false
+		for _, ignoredFieldName := range hasher.ignoredFieldNames {
+			if ignoredFieldName == sprops.Prop[i].OrigName {
+				ignoreField = true
+				break
+			}
+		}
+		if ignoreField {
+			continue
 		}
 
 		if isAOneOfField(v, sf) {

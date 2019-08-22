@@ -79,3 +79,23 @@ func (x messageIdentifier) set(oh *objectHasher) {
 func (x messageIdentifier) String() string {
 	return fmt.Sprintf("MessageIdentifier(%v)", string(x))
 }
+
+// Ignores fields with the given field name when hashing.
+// TODO: This is not a permanent solution since it ignores all fields with the
+// name, regardless of the message they are in. A proper solution needs to
+// either encode package and nested message names OR use a custom option in the
+// proto spec to indicate that the field should be skipped.
+func IgnoreFieldName(n string) Option { return ignoredFieldName(n) }
+
+type ignoredFieldName string
+
+func (x ignoredFieldName) set(oh *objectHasher) {
+	if oh.ignoredFieldNames == nil {
+		oh.ignoredFieldNames = make([]string, 1)
+	}
+	oh.ignoredFieldNames = append(oh.ignoredFieldNames, string(x))
+}
+
+func (x ignoredFieldName) String() string {
+	return fmt.Sprintf("IgnoreFieldName(%s)", string(x))
+}
