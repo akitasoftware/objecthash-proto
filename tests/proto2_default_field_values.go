@@ -19,9 +19,9 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
-	oi "github.com/deepmind/objecthash-proto/internal"
-	pb2_latest "github.com/deepmind/objecthash-proto/test_protos/generated/latest/proto2"
-	ti "github.com/deepmind/objecthash-proto/tests/internal"
+	oi "github.com/akitasoftware/objecthash-proto/internal"
+	pb2_latest "github.com/akitasoftware/objecthash-proto/test_protos/generated/latest/proto2"
+	ti "github.com/akitasoftware/objecthash-proto/tests/internal"
 )
 
 // TestProto2DefaultFieldValues checks that proto2 default field values are properly hashed.

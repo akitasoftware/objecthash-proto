@@ -3,11 +3,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:a6609679ca468a89b711934f16b346e99f6ec344eadd2f7b00b1156785dd1236"
   name = "github.com/benlaurie/objecthash"
   packages = ["go/objecthash"]
+  pruneopts = "UT"
   revision = "d1e3d6079fc16f8f542183fb5b2fdc11d9f00866"
 
 [[projects]]
+  digest = "1:b03bcbc7bec056ed09ede2374e4b4b5678668da0e168bb6ce9efe6155917656c"
   name = "github.com/golang/protobuf"
   packages = [
     "proto",
@@ -15,14 +18,23 @@
     "ptypes/duration",
     "ptypes/struct",
     "ptypes/timestamp",
-    "ptypes/wrappers"
+    "ptypes/wrappers",
   ]
+  pruneopts = "UT"
   revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
   version = "v1.1.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "11ab4a98b6a7f43482424e97e787c5aa6c49e8140e0f8b4345338fc2e8ff7921"
+  input-imports = [
+    "github.com/benlaurie/objecthash/go/objecthash",
+    "github.com/golang/protobuf/proto",
+    "github.com/golang/protobuf/ptypes/any",
+    "github.com/golang/protobuf/ptypes/duration",
+    "github.com/golang/protobuf/ptypes/struct",
+    "github.com/golang/protobuf/ptypes/timestamp",
+    "github.com/golang/protobuf/ptypes/wrappers",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -61,7 +61,7 @@ func TestIsUnsetWithBadArguments(t *testing.T) {
 		}
 
 		// Make sure that the returned error is meaningful.
-		expectedError := "got an unexpected struct of type 'struct {}' for field {Name:s PkgPath:github.com/deepmind/objecthash-proto Type:struct {} Tag: Offset:0 Index:[0] Anonymous:false}"
+		expectedError := "got an unexpected struct of type 'struct {}' for field {Name:s PkgPath:github.com/akitasoftware/objecthash-proto Type:struct {} Tag: Offset:0 Index:[0] Anonymous:false}"
 		if err.Error() != expectedError {
 			t.Errorf("Expected the error returned by isUnset to be '%s'. Instead got '%s'.", expectedError, err)
 		}
@@ -80,7 +80,7 @@ func TestIsUnsetWithBadArguments(t *testing.T) {
 		}
 
 		// Make sure that the returned error is meaningful.
-		expectedError := "got an unexpected type 'chan interface {}' for field {Name:c PkgPath:github.com/deepmind/objecthash-proto Type:chan interface {} Tag: Offset:0 Index:[0] Anonymous:false}"
+		expectedError := "got an unexpected type 'chan interface {}' for field {Name:c PkgPath:github.com/akitasoftware/objecthash-proto Type:chan interface {} Tag: Offset:0 Index:[0] Anonymous:false}"
 		if err.Error() != expectedError {
 			t.Errorf("Expected the error returned by isUnset to be '%s'. Instead got '%s'.", expectedError, err)
 		}

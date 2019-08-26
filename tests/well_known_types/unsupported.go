@@ -23,10 +23,10 @@ import (
 	struct_pb "github.com/golang/protobuf/ptypes/struct"
 	wrappers_pb "github.com/golang/protobuf/ptypes/wrappers"
 
-	oi "github.com/deepmind/objecthash-proto/internal"
-	custom "github.com/deepmind/objecthash-proto/test_protos/custom"
-	pb2_latest "github.com/deepmind/objecthash-proto/test_protos/generated/latest/proto2"
-	pb3_latest "github.com/deepmind/objecthash-proto/test_protos/generated/latest/proto3"
+	oi "github.com/akitasoftware/objecthash-proto/internal"
+	custom "github.com/akitasoftware/objecthash-proto/test_protos/custom"
+	pb2_latest "github.com/akitasoftware/objecthash-proto/test_protos/generated/latest/proto2"
+	pb3_latest "github.com/akitasoftware/objecthash-proto/test_protos/generated/latest/proto3"
 )
 
 // TestUnsupportedWellKnownTypes confirms that hashing any of the unsupported

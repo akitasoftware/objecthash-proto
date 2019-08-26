@@ -17,7 +17,7 @@ package internal
 import (
 	"testing"
 
-	pb2_latest "github.com/deepmind/objecthash-proto/test_protos/generated/latest/proto2"
+	pb2_latest "github.com/akitasoftware/objecthash-proto/test_protos/generated/latest/proto2"
 
 	"github.com/golang/protobuf/proto"
 )

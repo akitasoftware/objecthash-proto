@@ -20,10 +20,10 @@ import (
 	"github.com/golang/protobuf/proto"
 	timestamp_pb "github.com/golang/protobuf/ptypes/timestamp"
 
-	oi "github.com/deepmind/objecthash-proto/internal"
-	pb2_latest "github.com/deepmind/objecthash-proto/test_protos/generated/latest/proto2"
-	pb3_latest "github.com/deepmind/objecthash-proto/test_protos/generated/latest/proto3"
-	ti "github.com/deepmind/objecthash-proto/tests/internal"
+	oi "github.com/akitasoftware/objecthash-proto/internal"
+	pb2_latest "github.com/akitasoftware/objecthash-proto/test_protos/generated/latest/proto2"
+	pb3_latest "github.com/akitasoftware/objecthash-proto/test_protos/generated/latest/proto3"
+	ti "github.com/akitasoftware/objecthash-proto/tests/internal"
 )
 
 // TestTimestamps confirms that google.protobuf.timestamp protos are hashed properly.

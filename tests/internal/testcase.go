@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"testing"
 
+	oi "github.com/akitasoftware/objecthash-proto/internal"
 	"github.com/benlaurie/objecthash/go/objecthash"
-	oi "github.com/deepmind/objecthash-proto/internal"
 	"github.com/golang/protobuf/proto"
 )
 
