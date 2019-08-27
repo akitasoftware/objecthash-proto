@@ -21,8 +21,16 @@ import (
 )
 
 // Supported well-known types.
-const (
-	timestamp string = "Timestamp"
+var (
+	timestamp string   = "Timestamp"
+	numbers   []string = []string{
+		"Int32Value",
+		"Int64Value",
+		"UInt32Value",
+		"UInt64Value",
+		"DoubleValue",
+		"FloatValue",
+	}
 )
 
 // hashWellKnownType hashes proto messages that are Well-known types.
@@ -36,6 +44,11 @@ const (
 func (hasher *objectHasher) hashWellKnownType(name string, sv reflect.Value) ([]byte, error) {
 	if name == timestamp {
 		return hasher.hashTimestamp(sv)
+	}
+	for _, numName := range numbers {
+		if name == numName {
+			return hasher.hashNumber(sv)
+		}
 	}
 
 	return nil, fmt.Errorf("Got a currently unsupported protobuf well-known type: %s", name)
@@ -81,4 +94,43 @@ func (hasher *objectHasher) hashTimestamp(sv reflect.Value) ([]byte, error) {
 	}
 
 	return hash(listIdentifier, b.Bytes())
+}
+
+// hashNumber calculates the object hash of a google.protobuf.Int32Value,
+// google.protobuf.Int64Value, google.protobuf.UInt32Value,
+// google.protobuf.UInt64Value, google.protobuf.FloatValue, or
+// google.protobuf.DoubleValue.
+//
+// The semantics of these wrapper objects imply that the distinction
+// between unset and zero happen at the message level, rather than the
+// field level.
+//
+// As a result, an unset int32/int64/uint32/uint64/float/double is one
+// where the proto itself is nil, while an explicitly set proto with
+// unset fields is considered to be explicitly set to 0.
+//
+// This is unlike normal proto3 messages, where unset/zero fields must be
+// considered to be unset, because they're indistinguishable in the general
+// case.
+//
+// Note that this function's argument is a reflect.Value of the underlying
+// struct object, rather than the proto message itself.
+func (hasher *objectHasher) hashNumber(sv reflect.Value) ([]byte, error) {
+	sk := sv.Kind()
+	if sk != reflect.Struct {
+		return nil, fmt.Errorf("Got a bad google.protobuf.Int32Value/Int64Value/UInt32Value/UInt64Value/DoubleValue/FloatValue proto: %v. Expected a Struct, instead got a %s", sv, sk)
+	}
+
+	// Hash seconds and nanoseconds.
+	v := sv.FieldByName("Value")
+	switch v.Kind() {
+	case reflect.Float32, reflect.Float64:
+		return hashFloat(v.Float())
+	case reflect.Int32, reflect.Int64:
+		return hashInt64(v.Int())
+	case reflect.Uint32, reflect.Uint64:
+		return hashUint64(v.Uint())
+	default:
+		return nil, fmt.Errorf("Unsupported value type in well-known numeric protobuf: %T", v)
+	}
 }

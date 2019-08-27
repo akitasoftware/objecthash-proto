@@ -50,25 +50,9 @@ func TestUnsupportedWellKnownTypes(t *testing.T, hashers oi.ProtoHashers) {
 		&pb2_latest.KnownTypes{BytesValueField: &wrappers_pb.BytesValue{}},
 		&pb3_latest.KnownTypes{BytesValueField: &wrappers_pb.BytesValue{}},
 
-		&wrappers_pb.DoubleValue{},
-		&pb2_latest.KnownTypes{DoubleValueField: &wrappers_pb.DoubleValue{}},
-		&pb3_latest.KnownTypes{DoubleValueField: &wrappers_pb.DoubleValue{}},
-
 		&duration_pb.Duration{},
 		&pb2_latest.KnownTypes{DurationField: &duration_pb.Duration{}},
 		&pb3_latest.KnownTypes{DurationField: &duration_pb.Duration{}},
-
-		&wrappers_pb.FloatValue{},
-		&pb2_latest.KnownTypes{FloatValueField: &wrappers_pb.FloatValue{}},
-		&pb3_latest.KnownTypes{FloatValueField: &wrappers_pb.FloatValue{}},
-
-		&wrappers_pb.Int32Value{},
-		&pb2_latest.KnownTypes{Int32ValueField: &wrappers_pb.Int32Value{}},
-		&pb3_latest.KnownTypes{Int32ValueField: &wrappers_pb.Int32Value{}},
-
-		&wrappers_pb.Int64Value{},
-		&pb2_latest.KnownTypes{Int64ValueField: &wrappers_pb.Int64Value{}},
-		&pb3_latest.KnownTypes{Int64ValueField: &wrappers_pb.Int64Value{}},
 
 		&struct_pb.ListValue{},
 		&pb2_latest.KnownTypes{ListValueField: &struct_pb.ListValue{}},
@@ -81,14 +65,6 @@ func TestUnsupportedWellKnownTypes(t *testing.T, hashers oi.ProtoHashers) {
 		&struct_pb.Struct{},
 		&pb2_latest.KnownTypes{StructField: &struct_pb.Struct{}},
 		&pb3_latest.KnownTypes{StructField: &struct_pb.Struct{}},
-
-		&wrappers_pb.UInt32Value{},
-		&pb2_latest.KnownTypes{Uint32ValueField: &wrappers_pb.UInt32Value{}},
-		&pb3_latest.KnownTypes{Uint32ValueField: &wrappers_pb.UInt32Value{}},
-
-		&wrappers_pb.UInt64Value{},
-		&pb2_latest.KnownTypes{Uint64ValueField: &wrappers_pb.UInt64Value{}},
-		&pb3_latest.KnownTypes{Uint64ValueField: &wrappers_pb.UInt64Value{}},
 
 		&struct_pb.Value{},
 		&pb2_latest.KnownTypes{ValueField: &struct_pb.Value{}},

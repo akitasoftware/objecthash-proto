@@ -44,5 +44,6 @@ func TestFunctional(t *testing.T) {
 
 	// Well-known types.
 	t.Run("TestTimestamps", func(t *testing.T) { wkt.TestTimestamps(t, protoHashers) })
+	t.Run("TestNumericWellKnownTypes", func(t *testing.T) { wkt.TestNumericWellKnownTypes(t, protoHashers) })
 	t.Run("TestUnsupportedWellKnownTypes", func(t *testing.T) { wkt.TestUnsupportedWellKnownTypes(t, protoHashers) })
 }
