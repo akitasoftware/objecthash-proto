@@ -86,14 +86,14 @@ func (hasher *objectHasher) hashTimestamp(sv reflect.Value) ([]byte, error) {
 		if fk != reflect.Int64 && fk != reflect.Int32 {
 			return nil, fmt.Errorf("Got a google.protobuf.Timestamp proto with a bad '%s' field: %v. Expected an integer, instead got a %s", field, sv, fk)
 		}
-		h, err := hashInt64(fieldValue.Int())
+		h, err := hasher.basicHasher.hashInt64(fieldValue.Int())
 		if err != nil {
 			return nil, err
 		}
 		b.Write(h[:])
 	}
 
-	return hash(listIdentifier, b.Bytes())
+	return hasher.basicHasher.hash(listIdentifier, b.Bytes())
 }
 
 // hashNumber calculates the object hash of a google.protobuf.Int32Value,
@@ -125,11 +125,11 @@ func (hasher *objectHasher) hashNumber(sv reflect.Value) ([]byte, error) {
 	v := sv.FieldByName("Value")
 	switch v.Kind() {
 	case reflect.Float32, reflect.Float64:
-		return hashFloat(v.Float())
+		return hasher.basicHasher.hashFloat(v.Float())
 	case reflect.Int32, reflect.Int64:
-		return hashInt64(v.Int())
+		return hasher.basicHasher.hashInt64(v.Int())
 	case reflect.Uint32, reflect.Uint64:
-		return hashUint64(v.Uint())
+		return hasher.basicHasher.hashUint64(v.Uint())
 	default:
 		return nil, fmt.Errorf("Unsupported value type in well-known numeric protobuf: %T", v)
 	}

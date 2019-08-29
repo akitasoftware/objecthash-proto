@@ -15,12 +15,13 @@
 package protohash
 
 import (
+	"crypto/md5"
 	"crypto/sha256"
 	"fmt"
+	"hash"
+	"hash/fnv"
 	"math"
 )
-
-const hashLength int = sha256.Size
 
 const (
 	// Sorted alphabetically by value.
@@ -34,33 +35,68 @@ const (
 	unicodeIndentifier = `u`
 )
 
-func hash(t string, b []byte) ([]byte, error) {
-	h := sha256.New()
+type BasicHashFunc int
 
-	if _, err := h.Write([]byte(t)); err != nil {
-		return nil, err
+const (
+	SHA256 BasicHashFunc = iota
+	MD5
+	FNV1A_128
+)
+
+func (f BasicHashFunc) String() string {
+	switch f {
+	case SHA256:
+		return "SHA256"
+	case MD5:
+		return "MD5"
+	case FNV1A_128:
+		return "FNV-1a 128-bit"
+	default:
+		return "UNKNOWN"
 	}
-
-	if _, err := h.Write(b); err != nil {
-		return nil, err
-	}
-
-	return h.Sum(nil), nil
 }
 
-func hashBool(b bool) ([]byte, error) {
+type basicHasher struct {
+	basicHashFunc BasicHashFunc
+}
+
+func (h basicHasher) hash(t string, b []byte) ([]byte, error) {
+	var bh hash.Hash
+	switch h.basicHashFunc {
+	case SHA256:
+		bh = sha256.New()
+	case MD5:
+		bh = md5.New()
+	case FNV1A_128:
+		bh = fnv.New128a()
+	default:
+		return nil, fmt.Errorf("unsupported basic hash function: %d", h.basicHashFunc)
+	}
+
+	if _, err := bh.Write([]byte(t)); err != nil {
+		return nil, err
+	}
+
+	if _, err := bh.Write(b); err != nil {
+		return nil, err
+	}
+
+	return bh.Sum(nil), nil
+}
+
+func (h basicHasher) hashBool(b bool) ([]byte, error) {
 	bb := []byte(`0`)
 	if b {
 		bb = []byte(`1`)
 	}
-	return hash(boolIdentifier, bb)
+	return h.hash(boolIdentifier, bb)
 }
 
-func hashBytes(bs []byte) ([]byte, error) {
-	return hash(byteIdentifier, bs)
+func (h basicHasher) hashBytes(bs []byte) ([]byte, error) {
+	return h.hash(byteIdentifier, bs)
 }
 
-func hashFloat(f float64) ([]byte, error) {
+func (h basicHasher) hashFloat(f float64) ([]byte, error) {
 	var normalizedFloat string
 
 	switch {
@@ -78,21 +114,21 @@ func hashFloat(f float64) ([]byte, error) {
 		}
 	}
 
-	return hash(floatIdentifier, []byte(normalizedFloat))
+	return h.hash(floatIdentifier, []byte(normalizedFloat))
 }
 
-func hashInt64(i int64) ([]byte, error) {
-	return hash(intIdentifier, []byte(fmt.Sprintf("%d", i)))
+func (h basicHasher) hashInt64(i int64) ([]byte, error) {
+	return h.hash(intIdentifier, []byte(fmt.Sprintf("%d", i)))
 }
 
-func hashNil() ([]byte, error) {
-	return hash(nilIdentifier, []byte(``))
+func (h basicHasher) hashNil() ([]byte, error) {
+	return h.hash(nilIdentifier, []byte(``))
 }
 
-func hashUint64(i uint64) ([]byte, error) {
-	return hash(intIdentifier, []byte(fmt.Sprintf("%d", i)))
+func (h basicHasher) hashUint64(i uint64) ([]byte, error) {
+	return h.hash(intIdentifier, []byte(fmt.Sprintf("%d", i)))
 }
 
-func hashUnicode(s string) ([]byte, error) {
-	return hash(unicodeIndentifier, []byte(s))
+func (h basicHasher) hashUnicode(s string) ([]byte, error) {
+	return h.hash(unicodeIndentifier, []byte(s))
 }

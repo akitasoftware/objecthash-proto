@@ -39,6 +39,8 @@ type objectHasher struct {
 	messageIdentifier string
 
 	ignoredFieldNames []string
+
+	basicHasher basicHasher
 }
 
 // HashProto returns the object hash of a given protocol buffer message.
@@ -53,7 +55,7 @@ func (hasher *objectHasher) HashProto(pb proto.Message) (h []byte, err error) {
 
 	// Check if the value is nil.
 	if pb == nil {
-		return hashNil()
+		return hasher.basicHasher.hashNil()
 	}
 
 	// Expliclity set any custom default values. This is done in order to detect
@@ -90,7 +92,7 @@ func (hasher *objectHasher) hashRepeatedField(v reflect.Value, sf reflect.Struct
 		}
 		b.Write(h[:])
 	}
-	return hash(listIdentifier, b.Bytes())
+	return hasher.basicHasher.hash(listIdentifier, b.Bytes())
 }
 
 func (hasher *objectHasher) hashMap(v reflect.Value, sf reflect.StructField, props *proto.Properties) ([]byte, error) {
@@ -136,7 +138,7 @@ func (hasher *objectHasher) hashMap(v reflect.Value, sf reflect.StructField, pro
 		h.Write(e.khash[:])
 		h.Write(e.vhash[:])
 	}
-	return hash(mapIdentifier, h.Bytes())
+	return hasher.basicHasher.hash(mapIdentifier, h.Bytes())
 }
 
 // hashStruct hashes the struct objects of dereferenced proto messages.
@@ -218,7 +220,7 @@ func (hasher *objectHasher) hashStruct(sv reflect.Value) ([]byte, error) {
 	if hasher.messageIdentifier != "" {
 		identifier = hasher.messageIdentifier
 	}
-	return hash(identifier, h.Bytes())
+	return hasher.basicHasher.hash(identifier, h.Bytes())
 }
 
 // hashValue returns the hash of an arbitrary proto field value.
@@ -239,11 +241,11 @@ func (hasher *objectHasher) hashValue(v reflect.Value, sf reflect.StructField, p
 		}
 
 		// If it's not a repeated field, then it must be []byte.
-		return hashBytes(v.Bytes())
+		return hasher.basicHasher.hashBytes(v.Bytes())
 	case reflect.String:
-		return hashUnicode(v.String())
+		return hasher.basicHasher.hashUnicode(v.String())
 	case reflect.Float32, reflect.Float64:
-		return hashFloat(v.Float())
+		return hasher.basicHasher.hashFloat(v.Float())
 	case reflect.Int32, reflect.Int64:
 		// This also includes enums, which are represented as integers.
 		if hasher.enumsAsStrings && props.Enum != "" {
@@ -251,13 +253,13 @@ func (hasher *objectHasher) hashValue(v reflect.Value, sf reflect.StructField, p
 			if err != nil {
 				return nil, err
 			}
-			return hashUnicode(str)
+			return hasher.basicHasher.hashUnicode(str)
 		}
-		return hashInt64(v.Int())
+		return hasher.basicHasher.hashInt64(v.Int())
 	case reflect.Uint32, reflect.Uint64:
-		return hashUint64(v.Uint())
+		return hasher.basicHasher.hashUint64(v.Uint())
 	case reflect.Bool:
-		return hashBool(v.Bool())
+		return hasher.basicHasher.hashBool(v.Bool())
 	case reflect.Ptr:
 		// We know that this is not a null pointer because unset values (incl. null
 		// pointer) get skipped and should not get hashed.
@@ -282,9 +284,9 @@ func (hasher *objectHasher) hashStructField(v reflect.Value, sf reflect.StructFi
 
 	// Hash the tag.
 	if hasher.fieldNamesAsKeys {
-		khash, err = hashUnicode(props.OrigName)
+		khash, err = hasher.basicHasher.hashUnicode(props.OrigName)
 	} else {
-		khash, err = hashInt64(int64(props.Tag))
+		khash, err = hasher.basicHasher.hashInt64(int64(props.Tag))
 	}
 	if err != nil {
 		return hashEntry{}, err

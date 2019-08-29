@@ -99,3 +99,17 @@ func (x ignoredFieldName) set(oh *objectHasher) {
 func (x ignoredFieldName) String() string {
 	return fmt.Sprintf("IgnoreFieldName(%s)", string(x))
 }
+
+// Sets the hash function that the ProtoHasher will use to hash individual
+// fields.
+func BasicHashFunction(h BasicHashFunc) Option { return basicHashFunc(h) }
+
+type basicHashFunc BasicHashFunc
+
+func (x basicHashFunc) set(oh *objectHasher) {
+	oh.basicHasher = basicHasher{BasicHashFunc(x)}
+}
+
+func (x basicHashFunc) String() string {
+	return fmt.Sprintf("BasicHashFunction(%s)", BasicHashFunc(x).String())
+}
