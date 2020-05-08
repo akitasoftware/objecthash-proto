@@ -21,6 +21,8 @@ import (
 	"hash"
 	"hash/fnv"
 	"math"
+
+	"github.com/OneOfOne/xxhash"
 )
 
 const (
@@ -41,6 +43,7 @@ const (
 	SHA256 BasicHashFunc = iota
 	MD5
 	FNV1A_128
+	XXHASH64
 )
 
 func (f BasicHashFunc) String() string {
@@ -51,6 +54,8 @@ func (f BasicHashFunc) String() string {
 		return "MD5"
 	case FNV1A_128:
 		return "FNV-1a 128-bit"
+	case XXHASH64:
+		return "XXHASH64"
 	default:
 		return "UNKNOWN"
 	}
@@ -69,6 +74,8 @@ func (h basicHasher) hash(t string, b []byte) ([]byte, error) {
 		bh = md5.New()
 	case FNV1A_128:
 		bh = fnv.New128a()
+	case XXHASH64:
+		bh = xxhash.New64()
 	default:
 		return nil, fmt.Errorf("unsupported basic hash function: %d", h.basicHashFunc)
 	}
