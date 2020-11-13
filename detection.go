@@ -129,7 +129,17 @@ func isAProto2BytesField(v reflect.Value, sf reflect.StructField) bool {
 // - "XXX_sizecache": This is used in serialization. Its value is irrelevant to
 //   the actual content of the proto and should not be used in comparisons or
 //   for generating hashes.
+// - "sizeCache": protobuf APIv2 version of XXX_sizecache
+// - "state": Used to support reflection in protobuf APIv2. See
+// 		https://pkg.go.dev/google.golang.org/protobuf@v1.25.0/internal/impl#MessageState
 func isContentIndependentField(v reflect.Value, sf reflect.StructField) bool {
+	if sf.Type.PkgPath() == "google.golang.org/protobuf/internal/impl" {
+		// protobuf APIv2
+		typeName := sf.Type.Name()
+		return typeName == "SizeCache" || typeName == "MessageState"
+	}
+
+	// protobuf APIv1
 	name := sf.Name
 	return name == "XXX_NoUnkeyedLiteral" || name == "XXX_sizecache"
 }
